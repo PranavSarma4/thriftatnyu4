@@ -254,9 +254,6 @@ export default function AdminPage() {
               </motion.button>
             </form>
             
-            <p className="text-center text-sm text-[var(--muted)] mt-6">
-              Demo password: <code className="bg-[var(--surface-elevated)] px-2 py-0.5 rounded">admin123</code>
-            </p>
           </div>
         </motion.div>
       </div>
