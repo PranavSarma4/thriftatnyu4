@@ -40,12 +40,14 @@ interface FormData {
   email: string;
   phone: string;
   zelleInfo: string;
+  zelleType: 'email' | 'phone' | '';
   pickupAddress: string;
   pickupAvailability: string[];
   preferredDate: string;
   clothingDescription: string;
   clothingItems: string[];
   estimatedItems: number;
+  saveAccount: boolean;
 }
 
 const initialFormData: FormData = {
@@ -53,12 +55,20 @@ const initialFormData: FormData = {
   email: '',
   phone: '',
   zelleInfo: '',
+  zelleType: '',
   pickupAddress: '',
   pickupAvailability: [],
   preferredDate: '',
   clothingDescription: '',
   clothingItems: [],
   estimatedItems: 5,
+  saveAccount: true,
+};
+
+// Email validation function
+const isValidEmail = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
 };
 
 export default function SubmitPage() {
@@ -77,7 +87,7 @@ export default function SubmitPage() {
 
   const totalSteps = 3;
 
-  const updateFormData = (field: keyof FormData, value: string | number | string[]) => {
+  const updateFormData = (field: keyof FormData, value: string | number | string[] | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -87,17 +97,27 @@ export default function SubmitPage() {
       return;
     }
     
+    if (!isValidEmail(loginEmail)) {
+      setLoginError('Please enter a valid email address');
+      return;
+    }
+    
     setIsLoading(true);
     try {
       const account = await getCustomerAccount(loginEmail);
       if (account) {
+        // Determine zelleType based on saved zelleInfo
+        const zelleType: 'email' | 'phone' = account.zelleInfo === account.email ? 'email' : 'phone';
+        
         setFormData(prev => ({
           ...prev,
           customerName: account.customerName,
           email: account.email,
           phone: account.phone,
           zelleInfo: account.zelleInfo,
+          zelleType: zelleType,
           pickupAddress: account.defaultAddress,
+          saveAccount: true,
         }));
         const submissions = await getSubmissionsByEmail(loginEmail);
         setExistingSubmissions(submissions.length);
@@ -142,12 +162,31 @@ export default function SubmitPage() {
     }
   };
 
+  const [emailError, setEmailError] = useState('');
+
+  const validateEmail = (email: string) => {
+    if (!email) {
+      setEmailError('Email is required');
+      return false;
+    }
+    if (!isValidEmail(email)) {
+      setEmailError('Please enter a valid email address (e.g., name@example.com)');
+      return false;
+    }
+    setEmailError('');
+    return true;
+  };
+
   const canProceed = () => {
     switch (step) {
       case 0:
         return true;
       case 1:
-        return formData.customerName && formData.email && formData.phone && formData.zelleInfo;
+        return formData.customerName && 
+               formData.email && 
+               isValidEmail(formData.email) && 
+               formData.phone && 
+               formData.zelleType;
       case 2:
         return formData.pickupAddress && formData.pickupAvailability.length > 0;
       case 3:
@@ -162,21 +201,26 @@ export default function SubmitPage() {
     
     setIsSubmitting(true);
     
+    // Determine Zelle info based on selection
+    const zelleInfo = formData.zelleType === 'email' ? formData.email : formData.phone;
+    
     try {
-      // Save customer account for future use
-      await saveCustomerAccount({
-        email: formData.email,
-        customerName: formData.customerName,
-        phone: formData.phone,
-        zelleInfo: formData.zelleInfo,
-        defaultAddress: formData.pickupAddress,
-      });
+      // Save customer account for future use if opted in
+      if (formData.saveAccount) {
+        await saveCustomerAccount({
+          email: formData.email,
+          customerName: formData.customerName,
+          phone: formData.phone,
+          zelleInfo: zelleInfo,
+          defaultAddress: formData.pickupAddress,
+        });
+      }
       
       const submission = await createSubmission({
         customerName: formData.customerName,
         email: formData.email,
         phone: formData.phone,
-        zelleInfo: formData.zelleInfo,
+        zelleInfo: zelleInfo,
         pickupAddress: formData.pickupAddress,
         clothingDescription: `Availability: ${formData.pickupAvailability.join(', ')}${formData.preferredDate ? ` | Preferred Date: ${formData.preferredDate}` : ''}${formData.clothingDescription ? ` | Notes: ${formData.clothingDescription}` : ''}`,
         clothingItems: formData.clothingItems,
@@ -452,10 +496,17 @@ export default function SubmitPage() {
                       <input
                         type="email"
                         value={formData.email}
-                        onChange={(e) => updateFormData('email', e.target.value)}
+                        onChange={(e) => {
+                          updateFormData('email', e.target.value);
+                          if (e.target.value) validateEmail(e.target.value);
+                        }}
+                        onBlur={(e) => validateEmail(e.target.value)}
                         placeholder="john@nyu.edu"
-                        className="input-field"
+                        className={`input-field ${emailError ? 'border-red-500 focus:border-red-500' : ''}`}
                       />
+                      {emailError && (
+                        <p className="text-red-500 text-sm mt-1">{emailError}</p>
+                      )}
                     </div>
                     
                     <div>
@@ -470,17 +521,91 @@ export default function SubmitPage() {
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium mb-2">Zelle Information (Email or Phone)</label>
-                      <input
-                        type="text"
-                        value={formData.zelleInfo}
-                        onChange={(e) => updateFormData('zelleInfo', e.target.value)}
-                        placeholder="Payment email or phone number"
-                        className="input-field"
-                      />
-                      <p className="text-sm text-[var(--muted)] mt-2">
-                        We&apos;ll send your payment to this Zelle account when your items sell
+                      <label className="block text-sm font-medium mb-3">Zelle Payment Method</label>
+                      <p className="text-sm text-[var(--muted)] mb-3">
+                        Which would you like to use for Zelle payments?
                       </p>
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <motion.button
+                          type="button"
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={() => updateFormData('zelleType', 'email')}
+                          className={`flex-1 p-4 rounded-xl border-2 text-left transition-all ${
+                            formData.zelleType === 'email'
+                              ? 'border-[var(--accent)] bg-[var(--accent)]/5'
+                              : 'border-[var(--border)] hover:border-[var(--accent)]/50'
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                              formData.zelleType === 'email' ? 'border-[var(--accent)]' : 'border-[var(--muted)]'
+                            }`}>
+                              {formData.zelleType === 'email' && (
+                                <div className="w-2.5 h-2.5 rounded-full bg-[var(--accent)]" />
+                              )}
+                            </div>
+                            <div>
+                              <p className="font-medium">Use my email</p>
+                              <p className="text-sm text-[var(--muted)]">{formData.email || 'Enter email above'}</p>
+                            </div>
+                          </div>
+                        </motion.button>
+                        
+                        <motion.button
+                          type="button"
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={() => updateFormData('zelleType', 'phone')}
+                          className={`flex-1 p-4 rounded-xl border-2 text-left transition-all ${
+                            formData.zelleType === 'phone'
+                              ? 'border-[var(--accent)] bg-[var(--accent)]/5'
+                              : 'border-[var(--border)] hover:border-[var(--accent)]/50'
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                              formData.zelleType === 'phone' ? 'border-[var(--accent)]' : 'border-[var(--muted)]'
+                            }`}>
+                              {formData.zelleType === 'phone' && (
+                                <div className="w-2.5 h-2.5 rounded-full bg-[var(--accent)]" />
+                              )}
+                            </div>
+                            <div>
+                              <p className="font-medium">Use my phone</p>
+                              <p className="text-sm text-[var(--muted)]">{formData.phone || 'Enter phone above'}</p>
+                            </div>
+                          </div>
+                        </motion.button>
+                      </div>
+                    </div>
+                    
+                    {/* Save Account Option */}
+                    <div className="pt-4 border-t border-[var(--border)]">
+                      <motion.button
+                        type="button"
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => updateFormData('saveAccount', !formData.saveAccount)}
+                        className="flex items-start gap-3 w-full text-left"
+                      >
+                        <div className={`mt-0.5 w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
+                          formData.saveAccount 
+                            ? 'border-[var(--accent)] bg-[var(--accent)]' 
+                            : 'border-[var(--muted)]'
+                        }`}>
+                          {formData.saveAccount && (
+                            <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                            </svg>
+                          )}
+                        </div>
+                        <div>
+                          <p className="font-medium">Create an account for faster submissions</p>
+                          <p className="text-sm text-[var(--muted)]">
+                            Save your info so you can submit again quickly next time
+                          </p>
+                        </div>
+                      </motion.button>
                     </div>
                   </div>
                 </div>
