@@ -131,9 +131,12 @@ export default function SubmitPage() {
   // Image upload handler
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (!files) return;
+    console.log('Files selected:', files?.length);
+    if (!files || files.length === 0) return;
 
     Array.from(files).forEach(file => {
+      console.log('Processing file:', file.name, file.size);
+      
       if (file.size > 5 * 1024 * 1024) { // 5MB limit
         alert('Image must be less than 5MB');
         return;
@@ -142,10 +145,18 @@ export default function SubmitPage() {
       const reader = new FileReader();
       reader.onload = (event) => {
         const base64 = event.target?.result as string;
-        setFormData(prev => ({
-          ...prev,
-          images: [...prev.images, base64].slice(0, 5), // Max 5 images
-        }));
+        console.log('Image loaded, base64 length:', base64?.length);
+        setFormData(prev => {
+          const newImages = [...prev.images, base64].slice(0, 5);
+          console.log('Updated images count:', newImages.length);
+          return {
+            ...prev,
+            images: newImages,
+          };
+        });
+      };
+      reader.onerror = (error) => {
+        console.error('Error reading file:', error);
       };
       reader.readAsDataURL(file);
     });
@@ -945,13 +956,16 @@ export default function SubmitPage() {
                         {formData.images.length < 5 && (
                           <motion.button
                             type="button"
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            onClick={() => fileInputRef.current?.click()}
-                            className="aspect-square rounded-xl border-2 border-dashed border-[var(--border)] hover:border-[var(--accent)] flex flex-col items-center justify-center gap-2 text-[var(--muted)] hover:text-[var(--accent)] transition-all"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => {
+                              console.log('Upload button clicked');
+                              fileInputRef.current?.click();
+                            }}
+                            className="aspect-square rounded-xl border-2 border-dashed border-[var(--accent)]/50 hover:border-[var(--accent)] bg-[var(--accent)]/5 hover:bg-[var(--accent)]/10 flex flex-col items-center justify-center gap-2 text-[var(--accent)] transition-all cursor-pointer"
                           >
                             <Upload className="w-6 h-6" />
-                            <span className="text-xs">Add Photo</span>
+                            <span className="text-xs font-medium">Add Photo</span>
                           </motion.button>
                         )}
                       </div>
