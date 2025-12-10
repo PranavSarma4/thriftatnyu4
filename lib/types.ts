@@ -9,6 +9,7 @@ export interface ClothingSubmission {
   pickupLng?: number;
   clothingDescription: string;
   clothingItems: string[];
+  clothingImages?: string[];
   estimatedItems: number;
   status: 'pending' | 'scheduled' | 'picked_up' | 'processing' | 'listed' | 'sold';
   createdAt: string;

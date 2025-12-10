@@ -83,6 +83,7 @@ export async function POST(request: NextRequest) {
         pickupLng: coords.lng,
         clothingDescription: body.clothingDescription || '',
         clothingItems: body.clothingItems || [],
+        clothingImages: body.clothingImages || [],
         estimatedItems: body.estimatedItems || 0,
         status: 'pending' as SubmissionStatus,
         customerAvailability: body.customerAvailability || [],
