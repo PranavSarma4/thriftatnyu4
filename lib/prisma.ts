@@ -7,13 +7,18 @@ const globalForPrisma = globalThis as unknown as {
 const createPrismaClient = () => {
   const databaseUrl = process.env.DATABASE_URL;
   
-  if (!databaseUrl) {
-    throw new Error('DATABASE_URL environment variable is not set');
+  // Check if using Prisma Accelerate (URL starts with prisma+postgres://)
+  const isAccelerateUrl = databaseUrl?.startsWith('prisma+postgres://');
+  
+  if (isAccelerateUrl) {
+    // Use Prisma Accelerate
+    return new PrismaClient({
+      accelerateUrl: databaseUrl,
+    });
   }
   
-  return new PrismaClient({
-    accelerateUrl: databaseUrl,
-  });
+  // Standard PostgreSQL connection - Prisma reads URL from prisma.config.ts
+  return new PrismaClient();
 };
 
 // Lazy initialization - only create client when actually used
