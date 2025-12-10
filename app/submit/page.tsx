@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Package, 
@@ -16,10 +16,16 @@ import {
   Calendar,
   UserCheck,
   UserPlus,
-  Mail
+  Mail,
+  Camera,
+  Image as ImageIcon,
+  Upload
 } from 'lucide-react';
 import { createSubmission, getCustomerAccount, saveCustomerAccount, getSubmissionsByEmail } from '@/lib/store';
 import Link from 'next/link';
+import { useJsApiLoader, Libraries } from '@react-google-maps/api';
+
+const libraries: Libraries = ['places'];
 
 const clothingCategories = [
   'Tops', 'Bottoms', 'Dresses', 'Outerwear', 'Shoes', 
@@ -48,6 +54,7 @@ interface FormData {
   clothingItems: string[];
   estimatedItems: number;
   saveAccount: boolean;
+  images: string[]; // Base64 encoded images
 }
 
 const initialFormData: FormData = {
@@ -63,6 +70,7 @@ const initialFormData: FormData = {
   clothingItems: [],
   estimatedItems: 5,
   saveAccount: true,
+  images: [],
 };
 
 // Email validation function
@@ -84,8 +92,76 @@ export default function SubmitPage() {
   const [existingSubmissions, setExistingSubmissions] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
+  const addressInputRef = useRef<HTMLInputElement>(null);
+  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const totalSteps = 3;
+
+  // Load Google Maps API for Places Autocomplete
+  const { isLoaded } = useJsApiLoader({
+    id: 'google-map-script',
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
+    libraries,
+  });
+
+  // Initialize Google Places Autocomplete
+  const initAutocomplete = useCallback(() => {
+    if (isLoaded && addressInputRef.current && !autocompleteRef.current) {
+      autocompleteRef.current = new google.maps.places.Autocomplete(addressInputRef.current, {
+        types: ['address'],
+        componentRestrictions: { country: 'us' },
+      });
+
+      autocompleteRef.current.addListener('place_changed', () => {
+        const place = autocompleteRef.current?.getPlace();
+        if (place?.formatted_address) {
+          updateFormData('pickupAddress', place.formatted_address);
+        }
+      });
+    }
+  }, [isLoaded]);
+
+  useEffect(() => {
+    if (step === 2) {
+      initAutocomplete();
+    }
+  }, [step, initAutocomplete]);
+
+  // Image upload handler
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    Array.from(files).forEach(file => {
+      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+        alert('Image must be less than 5MB');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64 = event.target?.result as string;
+        setFormData(prev => ({
+          ...prev,
+          images: [...prev.images, base64].slice(0, 5), // Max 5 images
+        }));
+      };
+      reader.readAsDataURL(file);
+    });
+    
+    // Reset input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const removeImage = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      images: prev.images.filter((_, i) => i !== index),
+    }));
+  };
 
   const updateFormData = (field: keyof FormData, value: string | number | string[] | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -224,6 +300,7 @@ export default function SubmitPage() {
         pickupAddress: formData.pickupAddress,
         clothingDescription: `Availability: ${formData.pickupAvailability.join(', ')}${formData.preferredDate ? ` | Preferred Date: ${formData.preferredDate}` : ''}${formData.clothingDescription ? ` | Notes: ${formData.clothingDescription}` : ''}`,
         clothingItems: formData.clothingItems,
+        clothingImages: formData.images,
         estimatedItems: formData.estimatedItems,
         customerAvailability: formData.pickupAvailability,
       });
@@ -649,15 +726,16 @@ export default function SubmitPage() {
                   <div className="space-y-6">
                     <div>
                       <label className="block text-sm font-medium mb-2">Full Address</label>
-                      <textarea
+                      <input
+                        ref={addressInputRef}
+                        type="text"
                         value={formData.pickupAddress}
                         onChange={(e) => updateFormData('pickupAddress', e.target.value)}
-                        placeholder="123 Washington Square, Apt 4B, New York, NY 10003"
-                        rows={3}
-                        className="input-field resize-none"
+                        placeholder="Start typing your address..."
+                        className="input-field"
                       />
                       <p className="text-sm text-[var(--muted)] mt-2">
-                        Include apartment/unit number if applicable
+                        {isLoaded ? '📍 Start typing to see address suggestions' : 'Enter your full address including apartment/unit number'}
                       </p>
                     </div>
                     
@@ -802,21 +880,87 @@ export default function SubmitPage() {
                     
                     {/* Estimated items */}
                     <div>
-                      <label className="block text-sm font-medium mb-2">
+                      <label className="block text-sm font-medium mb-4">
                         Estimated Number of Items: <span className="text-[var(--accent)] font-bold">{formData.estimatedItems}</span>
                       </label>
-                      <input
-                        type="range"
-                        min="1"
-                        max="50"
-                        value={formData.estimatedItems}
-                        onChange={(e) => updateFormData('estimatedItems', parseInt(e.target.value))}
-                        className="w-full h-2 bg-[var(--surface-elevated)] rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[var(--accent)]"
-                      />
-                      <div className="flex justify-between text-xs text-[var(--muted)] mt-1">
+                      <div className="relative">
+                        <div 
+                          className="absolute top-1/2 -translate-y-1/2 left-0 h-2 rounded-full bg-[var(--accent)]"
+                          style={{ width: `${((formData.estimatedItems - 1) / 49) * 100}%` }}
+                        />
+                        <input
+                          type="range"
+                          min="1"
+                          max="50"
+                          value={formData.estimatedItems}
+                          onChange={(e) => updateFormData('estimatedItems', parseInt(e.target.value))}
+                          className="range-slider relative z-10"
+                        />
+                      </div>
+                      <div className="flex justify-between text-xs text-[var(--muted)] mt-2">
                         <span>1 item</span>
                         <span>50+ items</span>
                       </div>
+                    </div>
+                    
+                    {/* Photo upload */}
+                    <div>
+                      <label className="block text-sm font-medium mb-2 flex items-center gap-2">
+                        <Camera className="w-4 h-4 text-[var(--accent)]" />
+                        Upload Photos (optional)
+                      </label>
+                      <p className="text-sm text-[var(--muted)] mb-3">
+                        Add up to 5 photos of your items to help us give you a better estimate
+                      </p>
+                      
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={handleImageUpload}
+                        className="hidden"
+                      />
+                      
+                      <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
+                        {/* Uploaded images */}
+                        {formData.images.map((image, index) => (
+                          <div key={index} className="relative aspect-square rounded-xl overflow-hidden border border-[var(--border)] group">
+                            <img 
+                              src={image} 
+                              alt={`Upload ${index + 1}`}
+                              className="w-full h-full object-cover"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => removeImage(index)}
+                              className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
+                        ))}
+                        
+                        {/* Upload button */}
+                        {formData.images.length < 5 && (
+                          <motion.button
+                            type="button"
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={() => fileInputRef.current?.click()}
+                            className="aspect-square rounded-xl border-2 border-dashed border-[var(--border)] hover:border-[var(--accent)] flex flex-col items-center justify-center gap-2 text-[var(--muted)] hover:text-[var(--accent)] transition-all"
+                          >
+                            <Upload className="w-6 h-6" />
+                            <span className="text-xs">Add Photo</span>
+                          </motion.button>
+                        )}
+                      </div>
+                      
+                      {formData.images.length > 0 && (
+                        <p className="text-xs text-[var(--muted)] mt-2">
+                          {formData.images.length}/5 photos added
+                        </p>
+                      )}
                     </div>
                     
                     {/* Description */}

@@ -19,6 +19,7 @@ model ClothingSubmission {
   pickupLng            Float?
   clothingDescription  String?
   clothingItems        String[] // Array of clothing categories/items
+  clothingImages       String[] // Array of base64 encoded images
   estimatedItems       Int
   status               SubmissionStatus @default(pending)
   createdAt            DateTime @default(now())
