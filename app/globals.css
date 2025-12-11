@@ -1,17 +1,17 @@
 @import "tailwindcss";
 
-/* BRAT aesthetic - lime green, bold, minimal */
+/* BRAT aesthetic - softer lime green, bold, minimal */
 :root {
-  --background: #8ACE00;
-  --foreground: #000000;
-  --accent: #000000;
+  --background: #a4c639;
+  --foreground: #1a1a1a;
+  --accent: #1a1a1a;
   --accent-light: #333333;
   --accent-dark: #000000;
-  --surface: rgba(255, 255, 255, 0.15);
-  --surface-elevated: rgba(255, 255, 255, 0.25);
-  --border: rgba(0, 0, 0, 0.2);
-  --muted: rgba(0, 0, 0, 0.6);
-  --brat-green: #8ACE00;
+  --surface: rgba(255, 255, 255, 0.18);
+  --surface-elevated: rgba(255, 255, 255, 0.28);
+  --border: rgba(0, 0, 0, 0.15);
+  --muted: rgba(0, 0, 0, 0.55);
+  --brat-green: #a4c639;
 }
 
 @theme inline {
@@ -30,15 +30,15 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #000000;
-    --foreground: #8ACE00;
-    --accent: #8ACE00;
-    --accent-light: #a8e000;
-    --accent-dark: #6ba000;
-    --surface: rgba(138, 206, 0, 0.08);
-    --surface-elevated: rgba(138, 206, 0, 0.12);
-    --border: rgba(138, 206, 0, 0.25);
-    --muted: rgba(138, 206, 0, 0.6);
+    --background: #0a0a0a;
+    --foreground: #a4c639;
+    --accent: #a4c639;
+    --accent-light: #b8d44d;
+    --accent-dark: #8ab030;
+    --surface: rgba(164, 198, 57, 0.08);
+    --surface-elevated: rgba(164, 198, 57, 0.12);
+    --border: rgba(164, 198, 57, 0.2);
+    --muted: rgba(164, 198, 57, 0.6);
   }
 }
 
@@ -66,8 +66,8 @@ body {
 @media (prefers-color-scheme: dark) {
   body {
     background-image: 
-      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(138, 206, 0, 0.08), transparent),
-      radial-gradient(ellipse 60% 40% at 100% 100%, rgba(138, 206, 0, 0.05), transparent);
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(164, 198, 57, 0.06), transparent),
+      radial-gradient(ellipse 60% 40% at 100% 100%, rgba(164, 198, 57, 0.04), transparent);
   }
 }
 
@@ -360,7 +360,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Google Places Autocomplete - BRAT style */
 .pac-container {
-  background-color: var(--brat-green);
+  background-color: #a4c639;
   border: 2px solid var(--foreground);
   border-radius: 0;
   box-shadow: 4px 4px 0 var(--foreground);
@@ -391,7 +391,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .pac-item:hover {
   background-color: var(--foreground);
-  color: var(--brat-green);
+  color: #a4c639;
 }
 
 @media (prefers-color-scheme: dark) {

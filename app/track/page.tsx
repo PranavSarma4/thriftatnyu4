@@ -81,11 +81,7 @@ function TrackContent() {
 
   return (
     <div className="min-h-screen pt-24 pb-16">
-      {/* Background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/3 -left-32 w-96 h-96 bg-[var(--accent)]/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/3 -right-32 w-96 h-96 bg-pink-500/10 rounded-full blur-3xl" />
-      </div>
+      {/* Background - removed for cleaner look */}
 
       <div className="relative max-w-4xl mx-auto px-4 sm:px-6">
         {/* Header */}
@@ -94,9 +90,9 @@ function TrackContent() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--accent)]/10 border border-[var(--accent)]/20 mb-6">
+          <div className="inline-flex items-center gap-2 px-5 py-2 bg-[var(--accent)]/10 border-2 border-[var(--accent)]/20 mb-8">
             <Sparkles className="w-4 h-4 text-[var(--accent)]" />
-            <span className="text-sm font-medium text-[var(--accent)]">Real-Time Tracking</span>
+            <span className="text-sm font-bold uppercase tracking-wider text-[var(--accent)]">Real-Time Tracking</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             Track Your <span className="gradient-text">Submission</span>
@@ -113,7 +109,7 @@ function TrackContent() {
           transition={{ delay: 0.1 }}
           className="mb-12"
         >
-          <div className="bg-[var(--surface)] rounded-2xl p-6 border border-[var(--border)]">
+          <div className="bg-[var(--surface)] p-8 border-2 border-[var(--border)]">
             <div className="flex gap-4">
               <div className="flex-1">
                 <input
@@ -133,7 +129,7 @@ function TrackContent() {
                 className="btn-primary flex items-center gap-2 disabled:opacity-50"
               >
                 {isLoading ? (
-                  <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                  <div className="w-4 h-4 border-2 border-white/20 border-t-white animate-spin" />
                 ) : (
                   <>
                     <span>Search</span>
@@ -154,7 +150,7 @@ function TrackContent() {
               exit={{ opacity: 0, y: -20 }}
               className="text-center py-16"
             >
-              <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-[var(--surface)] border border-[var(--border)] flex items-center justify-center">
+              <div className="w-20 h-20 mx-auto mb-6 bg-[var(--surface)] border-2 border-[var(--border)] flex items-center justify-center">
                 <Package className="w-10 h-10 text-[var(--muted)]" />
               </div>
               <h3 className="text-xl font-semibold mb-2">No submissions found</h3>
@@ -185,15 +181,15 @@ function TrackContent() {
               {submissions.length > 1 && (
                 <div className="flex gap-2 overflow-x-auto pb-2">
                   {submissions.map((submission, index) => (
-                    <motion.button
+                      <motion.button
                       key={submission.id}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => setSelectedSubmission(submission)}
-                      className={`flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+                      className={`flex-shrink-0 px-5 py-3 text-sm font-bold uppercase tracking-wide transition-all ${
                         selectedSubmission?.id === submission.id
                           ? 'bg-[var(--accent)] text-white'
-                          : 'bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--accent)]'
+                          : 'bg-[var(--surface)] border-2 border-[var(--border)] hover:border-[var(--accent)]'
                       }`}
                     >
                       Submission #{index + 1}
@@ -206,8 +202,8 @@ function TrackContent() {
                 <div className="grid lg:grid-cols-5 gap-8">
                   {/* Status Timeline */}
                   <div className="lg:col-span-3">
-                    <div className="bg-[var(--surface)] rounded-2xl p-8 border border-[var(--border)]">
-                      <h3 className="text-xl font-bold mb-8">Order Status</h3>
+                    <div className="bg-[var(--surface)] p-10 border-2 border-[var(--border)]">
+                      <h3 className="text-xl font-bold mb-8 uppercase">Order Status</h3>
                       
                       <div className="relative">
                         {/* Progress line */}
@@ -234,7 +230,7 @@ function TrackContent() {
                                 transition={{ delay: index * 0.1 }}
                                 className="relative flex gap-4"
                               >
-                                <div className={`relative z-10 w-12 h-12 rounded-full flex items-center justify-center transition-all ${
+                                <div className={`relative z-10 w-12 h-12 flex items-center justify-center transition-all ${
                                   isCompleted 
                                     ? 'bg-[var(--accent)] text-white' 
                                     : 'bg-[var(--surface)] border-2 border-[var(--border)] text-[var(--muted)]'
@@ -257,9 +253,9 @@ function TrackContent() {
                                     <motion.div
                                       initial={{ opacity: 0, y: 10 }}
                                       animate={{ opacity: 1, y: 0 }}
-                                      className="mt-2 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--accent)]/10 text-[var(--accent)] text-sm"
+                                      className="mt-2 inline-flex items-center gap-2 px-4 py-2 bg-[var(--accent)]/10 text-[var(--accent)] text-sm font-bold uppercase tracking-wide"
                                     >
-                                      <span className="w-2 h-2 rounded-full bg-[var(--accent)] animate-pulse" />
+                                      <span className="w-2 h-2 bg-[var(--accent)] animate-pulse" />
                                       Current Status
                                     </motion.div>
                                   )}
@@ -275,9 +271,9 @@ function TrackContent() {
                   {/* Submission Details */}
                   <div className="lg:col-span-2 space-y-6">
                     {/* Status Card */}
-                    <div className="bg-gradient-to-br from-[var(--accent)] to-[var(--accent-dark)] rounded-2xl p-6 text-white">
-                      <p className="text-white/60 text-sm mb-1">Current Status</p>
-                      <p className="text-2xl font-bold mb-4">
+                    <div className="bg-[var(--accent)] p-8 text-white">
+                      <p className="text-white/60 text-sm uppercase tracking-wide mb-2">Current Status</p>
+                      <p className="text-2xl font-bold mb-5">
                         {STATUS_LABELS[selectedSubmission.status]}
                       </p>
                       <div className="flex items-center gap-2 text-sm text-white/80">
@@ -287,8 +283,8 @@ function TrackContent() {
                     </div>
 
                     {/* Details Card */}
-                    <div className="bg-[var(--surface)] rounded-2xl p-6 border border-[var(--border)]">
-                      <h4 className="font-semibold mb-4">Submission Details</h4>
+                    <div className="bg-[var(--surface)] p-8 border-2 border-[var(--border)]">
+                      <h4 className="font-bold mb-5 uppercase">Submission Details</h4>
                       
                       <div className="space-y-4">
                         <div className="flex items-start gap-3">
@@ -296,14 +292,14 @@ function TrackContent() {
                           <div>
                             <p className="text-sm text-[var(--muted)]">Items</p>
                             <p className="font-medium">{selectedSubmission.estimatedItems} items</p>
-                            <div className="flex flex-wrap gap-1 mt-1">
+                            <div className="flex flex-wrap gap-2 mt-2">
                               {selectedSubmission.clothingItems.slice(0, 3).map((item, i) => (
-                                <span key={i} className="text-xs px-2 py-0.5 bg-[var(--surface-elevated)] rounded-full">
+                                <span key={i} className="text-xs px-3 py-1 bg-[var(--surface-elevated)] font-bold">
                                   {item}
                                 </span>
                               ))}
                               {selectedSubmission.clothingItems.length > 3 && (
-                                <span className="text-xs px-2 py-0.5 bg-[var(--surface-elevated)] rounded-full">
+                                <span className="text-xs px-3 py-1 bg-[var(--surface-elevated)] font-bold">
                                   +{selectedSubmission.clothingItems.length - 3} more
                                 </span>
                               )}
@@ -328,17 +324,17 @@ function TrackContent() {
                         </div>
                         
                         {selectedSubmission.scheduledPickupDate && (
-                          <div className="flex items-start gap-3 p-3 bg-blue-500/5 rounded-xl border border-blue-500/20">
+                          <div className="flex items-start gap-3 p-4 bg-blue-500/5 border-2 border-blue-500/20">
                             <Truck className="w-5 h-5 text-blue-500 mt-0.5" />
                             <div>
-                              <p className="text-sm text-blue-500 font-medium">Scheduled Pickup</p>
+                              <p className="text-sm text-blue-500 font-bold uppercase">Scheduled Pickup</p>
                               <p className="font-bold text-lg">
                                 {formatDate(selectedSubmission.scheduledPickupDate)}
                                 {selectedSubmission.scheduledPickupTime && (
                                   <span className="text-blue-600"> at {selectedSubmission.scheduledPickupTime}</span>
                                 )}
                               </p>
-                              <p className="text-xs text-[var(--muted)] mt-1">
+                              <p className="text-xs text-[var(--muted)] mt-2">
                                 Please have your items ready for pickup
                               </p>
                             </div>
@@ -348,8 +344,8 @@ function TrackContent() {
                     </div>
 
                     {/* Tracking ID */}
-                    <div className="bg-[var(--surface)] rounded-2xl p-6 border border-[var(--border)]">
-                      <p className="text-sm text-[var(--muted)] mb-1">Tracking ID</p>
+                    <div className="bg-[var(--surface)] p-6 border-2 border-[var(--border)]">
+                      <p className="text-sm text-[var(--muted)] mb-2 uppercase tracking-wide">Tracking ID</p>
                       <p className="font-mono text-lg font-bold text-[var(--accent)]">
                         {selectedSubmission.id.slice(0, 8).toUpperCase()}
                       </p>
@@ -367,7 +363,7 @@ function TrackContent() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="mt-12 bg-[var(--surface)] rounded-2xl p-8 border border-[var(--border)] text-center"
+            className="mt-12 bg-[var(--surface)] p-10 border-2 border-[var(--border)] text-center"
           >
             <h3 className="text-xl font-bold mb-4">Need Help?</h3>
             <p className="text-[var(--muted)] mb-6">
@@ -387,7 +383,7 @@ export default function TrackPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen pt-24 pb-16 flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-[var(--accent)]/20 border-t-[var(--accent)] rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-[var(--accent)]/20 border-t-[var(--accent)] animate-spin" />
       </div>
     }>
       <TrackContent />
