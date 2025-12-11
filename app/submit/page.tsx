@@ -356,28 +356,28 @@ export default function SubmitPage() {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="max-w-lg mx-auto px-4 text-center"
+          className="max-w-lg mx-auto px-6 text-center"
         >
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: 'spring', delay: 0.2 }}
-            className="w-24 h-24 mx-auto mb-8 rounded-full bg-green-500/10 flex items-center justify-center"
+            className="w-24 h-24 mx-auto mb-10 bg-green-500/10 flex items-center justify-center"
           >
             <CheckCircle className="w-12 h-12 text-green-500" />
           </motion.div>
           
-          <h1 className="text-4xl font-bold mb-4">Submission Received!</h1>
-          <p className="text-[var(--muted)] text-lg mb-8">
+          <h1 className="text-4xl font-bold mb-5">Submission Received!</h1>
+          <p className="text-[var(--muted)] text-lg mb-10 leading-relaxed">
             Thank you for submitting your clothes. We&apos;ll review your submission and contact you shortly to schedule a pickup.
           </p>
           
-          <div className="bg-[var(--surface)] rounded-2xl p-6 border border-[var(--border)] mb-8">
-            <p className="text-sm text-[var(--muted)] mb-2">Your Tracking ID</p>
+          <div className="bg-[var(--surface)] p-8 border-2 border-[var(--border)] mb-10">
+            <p className="text-sm text-[var(--muted)] mb-3">Your Tracking ID</p>
             <p className="text-2xl font-mono font-bold text-[var(--accent)]">
               {submissionId.slice(0, 8).toUpperCase()}
             </p>
-            <p className="text-sm text-[var(--muted)] mt-4">
+            <p className="text-sm text-[var(--muted)] mt-5">
               Save this ID to track your submission status
             </p>
           </div>
@@ -410,24 +410,20 @@ export default function SubmitPage() {
 
   return (
     <div className="min-h-screen pt-24 pb-16">
-      {/* Background decoration */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 -right-32 w-96 h-96 bg-[var(--accent)]/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 -left-32 w-96 h-96 bg-pink-500/10 rounded-full blur-3xl" />
-      </div>
+      {/* Background decoration - removed for cleaner look */}
 
-      <div className="relative max-w-2xl mx-auto px-4 sm:px-6">
+      <div className="relative max-w-2xl mx-auto px-6">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
+          className="text-center mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--accent)]/10 border border-[var(--accent)]/20 mb-6">
+          <div className="inline-flex items-center gap-2 px-5 py-2 bg-[var(--accent)]/10 border-2 border-[var(--accent)]/20 mb-8">
             <Sparkles className="w-4 h-4 text-[var(--accent)]" />
-            <span className="text-sm font-medium text-[var(--accent)]">Free Pickup Service</span>
+            <span className="text-sm font-bold uppercase tracking-wider text-[var(--accent)]">Free Pickup Service</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+          <h1 className="text-4xl md:text-6xl font-bold mb-5">
             Submit Your <span className="gradient-text">Clothes</span>
           </h1>
           <p className="text-[var(--muted)] text-lg">
@@ -437,33 +433,33 @@ export default function SubmitPage() {
 
         {/* Progress bar - only show after step 0 */}
         {step > 0 && (
-          <div className="mb-12">
-            <div className="flex justify-between mb-4">
+          <div className="mb-14">
+            <div className="flex justify-between mb-5">
               {[1, 2, 3].map((s) => (
                 <div
                   key={s}
-                  className={`flex items-center gap-2 ${s <= step ? 'text-[var(--accent)]' : 'text-[var(--muted)]'}`}
+                  className={`flex items-center gap-3 ${s <= step ? 'text-[var(--accent)]' : 'text-[var(--muted)]'}`}
                 >
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors ${
+                  <div className={`w-10 h-10 flex items-center justify-center text-sm font-bold transition-colors ${
                     s < step 
                       ? 'bg-[var(--accent)] text-white' 
                       : s === step 
                       ? 'bg-[var(--accent)]/10 border-2 border-[var(--accent)]' 
-                      : 'bg-[var(--surface)] border border-[var(--border)]'
+                      : 'bg-[var(--surface)] border-2 border-[var(--border)]'
                   }`}>
                     {s < step ? <CheckCircle className="w-4 h-4" /> : s}
                   </div>
-                  <span className="hidden sm:inline text-sm font-medium">
+                  <span className="hidden sm:inline text-sm font-bold uppercase tracking-wide">
                     {s === 1 ? 'Your Info' : s === 2 ? 'Pickup Details' : 'Clothing'}
                   </span>
                 </div>
               ))}
             </div>
-            <div className="h-2 bg-[var(--surface)] rounded-full overflow-hidden">
+            <div className="h-2 bg-[var(--surface)] overflow-hidden">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${(step / totalSteps) * 100}%` }}
-                className="h-full bg-gradient-to-r from-[var(--accent)] to-[var(--accent-light)] rounded-full"
+                className="h-full bg-[var(--accent)]"
               />
             </div>
           </div>
@@ -481,20 +477,20 @@ export default function SubmitPage() {
                 exit={{ opacity: 0, x: -20 }}
                 className="space-y-6"
               >
-                <div className="grid sm:grid-cols-2 gap-4">
+                <div className="grid sm:grid-cols-2 gap-6">
                   {/* New Customer */}
                   <motion.button
                     type="button"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => setStep(1)}
-                    className="bg-[var(--surface)] rounded-2xl p-8 border border-[var(--border)] text-left hover:border-[var(--accent)] transition-all group"
+                    className="bg-[var(--surface)] p-10 border-2 border-[var(--border)] text-left hover:border-[var(--accent)] transition-all group card-hover"
                   >
-                    <div className="w-14 h-14 rounded-xl bg-[var(--accent)]/10 flex items-center justify-center mb-4 group-hover:bg-[var(--accent)]/20 transition-colors">
+                    <div className="w-14 h-14 bg-[var(--accent)]/10 flex items-center justify-center mb-6 group-hover:bg-[var(--accent)]/20 transition-colors">
                       <UserPlus className="w-7 h-7 text-[var(--accent)]" />
                     </div>
-                    <h3 className="text-xl font-bold mb-2">New Customer</h3>
-                    <p className="text-[var(--muted)] text-sm">
+                    <h3 className="text-xl font-bold mb-3 uppercase">New Customer</h3>
+                    <p className="text-[var(--muted)] text-sm leading-relaxed">
                       First time submitting? We&apos;ll get your details set up.
                     </p>
                   </motion.button>
@@ -502,17 +498,17 @@ export default function SubmitPage() {
                   {/* Returning Customer */}
                   <motion.div
                     whileHover={{ scale: 1.02 }}
-                    className="bg-[var(--surface)] rounded-2xl p-8 border border-[var(--border)] hover:border-[var(--accent)] transition-all"
+                    className="bg-[var(--surface)] p-10 border-2 border-[var(--border)] hover:border-[var(--accent)] transition-all"
                   >
-                    <div className="w-14 h-14 rounded-xl bg-green-500/10 flex items-center justify-center mb-4">
+                    <div className="w-14 h-14 bg-green-500/10 flex items-center justify-center mb-6">
                       <UserCheck className="w-7 h-7 text-green-500" />
                     </div>
-                    <h3 className="text-xl font-bold mb-2">Returning Customer</h3>
-                    <p className="text-[var(--muted)] text-sm mb-4">
+                    <h3 className="text-xl font-bold mb-3 uppercase">Returning Customer</h3>
+                    <p className="text-[var(--muted)] text-sm mb-6 leading-relaxed">
                       Already submitted before? Enter your email to pre-fill your info.
                     </p>
                     
-                    <div className="space-y-3">
+                    <div className="space-y-4">
                       <input
                         type="email"
                         value={loginEmail}
@@ -536,7 +532,7 @@ export default function SubmitPage() {
                         className="btn-primary w-full text-sm flex items-center justify-center gap-2 disabled:opacity-50"
                       >
                         {isLoading ? (
-                          <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                          <div className="w-4 h-4 border-2 border-white/20 border-t-white animate-spin" />
                         ) : (
                           <>
                             <Mail className="w-4 h-4" />
@@ -559,17 +555,17 @@ export default function SubmitPage() {
                 exit={{ opacity: 0, x: -20 }}
                 className="space-y-6"
               >
-                <div className="bg-[var(--surface)] rounded-2xl p-8 border border-[var(--border)]">
-                  <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-[var(--accent)]/10 flex items-center justify-center">
-                      <User className="w-5 h-5 text-[var(--accent)]" />
+                <div className="bg-[var(--surface)] p-10 border-2 border-[var(--border)]">
+                  <h2 className="text-2xl font-bold mb-8 flex items-center gap-4">
+                    <div className="w-12 h-12 bg-[var(--accent)]/10 flex items-center justify-center">
+                      <User className="w-6 h-6 text-[var(--accent)]" />
                     </div>
-                    Personal Information
+                    <span className="uppercase">Personal Information</span>
                   </h2>
                   
-                  <div className="space-y-5">
+                  <div className="space-y-6">
                     <div>
-                      <label className="block text-sm font-medium mb-2">Full Name</label>
+                      <label className="block text-sm font-bold uppercase tracking-wide mb-3">Full Name</label>
                       <input
                         type="text"
                         value={formData.customerName}
@@ -580,7 +576,7 @@ export default function SubmitPage() {
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium mb-2">Email Address</label>
+                      <label className="block text-sm font-bold uppercase tracking-wide mb-3">Email Address</label>
                       <input
                         type="email"
                         value={formData.email}
@@ -593,12 +589,12 @@ export default function SubmitPage() {
                         className={`input-field ${emailError ? 'border-red-500 focus:border-red-500' : ''}`}
                       />
                       {emailError && (
-                        <p className="text-red-500 text-sm mt-1">{emailError}</p>
+                        <p className="text-red-500 text-sm mt-2">{emailError}</p>
                       )}
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium mb-2">Phone Number</label>
+                      <label className="block text-sm font-bold uppercase tracking-wide mb-3">Phone Number</label>
                       <input
                         type="tel"
                         value={formData.phone}
@@ -609,32 +605,32 @@ export default function SubmitPage() {
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium mb-3">Zelle Payment Method</label>
-                      <p className="text-sm text-[var(--muted)] mb-3">
+                      <label className="block text-sm font-bold uppercase tracking-wide mb-3">Zelle Payment Method</label>
+                      <p className="text-sm text-[var(--muted)] mb-4">
                         Which would you like to use for Zelle payments?
                       </p>
-                      <div className="flex flex-col sm:flex-row gap-3">
+                      <div className="flex flex-col sm:flex-row gap-4">
                         <motion.button
                           type="button"
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                           onClick={() => updateFormData('zelleType', 'email')}
-                          className={`flex-1 p-4 rounded-xl border-2 text-left transition-all ${
+                          className={`flex-1 p-5 border-2 text-left transition-all ${
                             formData.zelleType === 'email'
                               ? 'border-[var(--accent)] bg-[var(--accent)]/5'
                               : 'border-[var(--border)] hover:border-[var(--accent)]/50'
                           }`}
                         >
-                          <div className="flex items-center gap-3">
-                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                          <div className="flex items-center gap-4">
+                            <div className={`w-5 h-5 border-2 flex items-center justify-center ${
                               formData.zelleType === 'email' ? 'border-[var(--accent)]' : 'border-[var(--muted)]'
                             }`}>
                               {formData.zelleType === 'email' && (
-                                <div className="w-2.5 h-2.5 rounded-full bg-[var(--accent)]" />
+                                <div className="w-2.5 h-2.5 bg-[var(--accent)]" />
                               )}
                             </div>
                             <div>
-                              <p className="font-medium">Use my email</p>
+                              <p className="font-bold">Use my email</p>
                               <p className="text-sm text-[var(--muted)]">{formData.email || 'Enter email above'}</p>
                             </div>
                           </div>
@@ -645,22 +641,22 @@ export default function SubmitPage() {
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                           onClick={() => updateFormData('zelleType', 'phone')}
-                          className={`flex-1 p-4 rounded-xl border-2 text-left transition-all ${
+                          className={`flex-1 p-5 border-2 text-left transition-all ${
                             formData.zelleType === 'phone'
                               ? 'border-[var(--accent)] bg-[var(--accent)]/5'
                               : 'border-[var(--border)] hover:border-[var(--accent)]/50'
                           }`}
                         >
-                          <div className="flex items-center gap-3">
-                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                          <div className="flex items-center gap-4">
+                            <div className={`w-5 h-5 border-2 flex items-center justify-center ${
                               formData.zelleType === 'phone' ? 'border-[var(--accent)]' : 'border-[var(--muted)]'
                             }`}>
                               {formData.zelleType === 'phone' && (
-                                <div className="w-2.5 h-2.5 rounded-full bg-[var(--accent)]" />
+                                <div className="w-2.5 h-2.5 bg-[var(--accent)]" />
                               )}
                             </div>
                             <div>
-                              <p className="font-medium">Use my phone</p>
+                              <p className="font-bold">Use my phone</p>
                               <p className="text-sm text-[var(--muted)]">{formData.phone || 'Enter phone above'}</p>
                             </div>
                           </div>
@@ -669,14 +665,14 @@ export default function SubmitPage() {
                     </div>
                     
                     {/* Save Account Option */}
-                    <div className="pt-4 border-t border-[var(--border)]">
+                    <div className="pt-6 border-t-2 border-[var(--border)]">
                       <motion.button
                         type="button"
                         whileTap={{ scale: 0.98 }}
                         onClick={() => updateFormData('saveAccount', !formData.saveAccount)}
-                        className="flex items-start gap-3 w-full text-left"
+                        className="flex items-start gap-4 w-full text-left"
                       >
-                        <div className={`mt-0.5 w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
+                        <div className={`mt-0.5 w-5 h-5 border-2 flex items-center justify-center transition-all ${
                           formData.saveAccount 
                             ? 'border-[var(--accent)] bg-[var(--accent)]' 
                             : 'border-[var(--muted)]'
@@ -688,8 +684,8 @@ export default function SubmitPage() {
                           )}
                         </div>
                         <div>
-                          <p className="font-medium">Create an account for faster submissions</p>
-                          <p className="text-sm text-[var(--muted)]">
+                          <p className="font-bold">Create an account for faster submissions</p>
+                          <p className="text-sm text-[var(--muted)] mt-1">
                             Save your info so you can submit again quickly next time
                           </p>
                         </div>
@@ -714,29 +710,29 @@ export default function SubmitPage() {
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-green-500/10 rounded-xl p-4 border border-green-500/20"
+                    className="bg-green-500/10 p-5 border-2 border-green-500/20"
                   >
-                    <p className="text-green-600 font-medium">
+                    <p className="text-green-600 font-bold">
                       👋 Welcome back, {formData.customerName}!
                     </p>
-                    <p className="text-sm text-green-600/80 mt-1">
+                    <p className="text-sm text-green-600/80 mt-2">
                       You have {existingSubmissions} previous submission{existingSubmissions !== 1 ? 's' : ''}.
                       Your info has been pre-filled.
                     </p>
                   </motion.div>
                 )}
                 
-                <div className="bg-[var(--surface)] rounded-2xl p-8 border border-[var(--border)]">
-                  <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-[var(--accent)]/10 flex items-center justify-center">
-                      <MapPin className="w-5 h-5 text-[var(--accent)]" />
+                <div className="bg-[var(--surface)] p-10 border-2 border-[var(--border)]">
+                  <h2 className="text-2xl font-bold mb-8 flex items-center gap-4">
+                    <div className="w-12 h-12 bg-[var(--accent)]/10 flex items-center justify-center">
+                      <MapPin className="w-6 h-6 text-[var(--accent)]" />
                     </div>
-                    Pickup Details
+                    <span className="uppercase">Pickup Details</span>
                   </h2>
                   
-                  <div className="space-y-6">
+                  <div className="space-y-8">
                     <div>
-                      <label className="block text-sm font-medium mb-2">Full Address</label>
+                      <label className="block text-sm font-bold uppercase tracking-wide mb-3">Full Address</label>
                       <input
                         ref={addressInputRef}
                         type="text"
@@ -745,17 +741,17 @@ export default function SubmitPage() {
                         placeholder="Start typing your address..."
                         className="input-field"
                       />
-                      <p className="text-sm text-[var(--muted)] mt-2">
+                      <p className="text-sm text-[var(--muted)] mt-3">
                         {isLoaded ? '📍 Start typing to see address suggestions' : 'Enter your full address including apartment/unit number'}
                       </p>
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium mb-3 flex items-center gap-2">
+                      <label className="block text-sm font-bold uppercase tracking-wide mb-4 flex items-center gap-2">
                         <Calendar className="w-4 h-4 text-[var(--accent)]" />
                         When are you available for pickup?
                       </label>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         {availabilityOptions.map((option) => (
                           <motion.button
                             key={option}
@@ -763,23 +759,23 @@ export default function SubmitPage() {
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             onClick={() => toggleAvailability(option)}
-                            className={`p-3 rounded-xl text-sm font-medium text-left transition-all ${
+                            className={`p-4 text-sm font-bold text-left transition-all ${
                               formData.pickupAvailability.includes(option)
                                 ? 'bg-[var(--accent)] text-white'
-                                : 'bg-[var(--surface-elevated)] border border-[var(--border)] hover:border-[var(--accent)]'
+                                : 'bg-[var(--surface-elevated)] border-2 border-[var(--border)] hover:border-[var(--accent)]'
                             }`}
                           >
                             {option}
                           </motion.button>
                         ))}
                       </div>
-                      <p className="text-sm text-[var(--muted)] mt-2">
+                      <p className="text-sm text-[var(--muted)] mt-3">
                         Select all times that work for you
                       </p>
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium mb-2">Preferred Pickup Date (Optional)</label>
+                      <label className="block text-sm font-bold uppercase tracking-wide mb-3">Preferred Pickup Date (Optional)</label>
                       <input
                         type="date"
                         value={formData.preferredDate}
@@ -790,9 +786,9 @@ export default function SubmitPage() {
                     </div>
                   </div>
                   
-                  <div className="mt-6 p-4 bg-[var(--accent)]/5 rounded-xl border border-[var(--accent)]/10">
-                    <p className="text-sm font-medium text-[var(--accent)] mb-2">📍 Pickup Info</p>
-                    <ul className="text-sm text-[var(--muted)] space-y-1">
+                  <div className="mt-8 p-6 bg-[var(--accent)]/5 border-2 border-[var(--accent)]/10">
+                    <p className="text-sm font-bold text-[var(--accent)] mb-3">📍 PICKUP INFO</p>
+                    <ul className="text-sm text-[var(--muted)] space-y-2">
                       <li>• Pickups available 7 days a week</li>
                       <li>• We&apos;ll confirm your pickup time via text</li>
                       <li>• Have items ready in bags or boxes</li>
@@ -811,19 +807,19 @@ export default function SubmitPage() {
                 exit={{ opacity: 0, x: -20 }}
                 className="space-y-6"
               >
-                <div className="bg-[var(--surface)] rounded-2xl p-8 border border-[var(--border)]">
-                  <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-[var(--accent)]/10 flex items-center justify-center">
-                      <Shirt className="w-5 h-5 text-[var(--accent)]" />
+                <div className="bg-[var(--surface)] p-10 border-2 border-[var(--border)]">
+                  <h2 className="text-2xl font-bold mb-8 flex items-center gap-4">
+                    <div className="w-12 h-12 bg-[var(--accent)]/10 flex items-center justify-center">
+                      <Shirt className="w-6 h-6 text-[var(--accent)]" />
                     </div>
-                    Clothing Details
+                    <span className="uppercase">Clothing Details</span>
                   </h2>
                   
-                  <div className="space-y-6">
+                  <div className="space-y-8">
                     {/* Categories */}
                     <div>
-                      <label className="block text-sm font-medium mb-3">Categories (select all that apply)</label>
-                      <div className="flex flex-wrap gap-2">
+                      <label className="block text-sm font-bold uppercase tracking-wide mb-4">Categories (select all that apply)</label>
+                      <div className="flex flex-wrap gap-3">
                         {clothingCategories.map((category) => (
                           <motion.button
                             key={category}
@@ -831,10 +827,10 @@ export default function SubmitPage() {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => toggleCategory(category)}
-                            className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                            className={`px-5 py-3 text-sm font-bold uppercase tracking-wide transition-all ${
                               formData.clothingItems.includes(category)
                                 ? 'bg-[var(--accent)] text-white'
-                                : 'bg-[var(--surface-elevated)] border border-[var(--border)] hover:border-[var(--accent)]'
+                                : 'bg-[var(--surface-elevated)] border-2 border-[var(--border)] hover:border-[var(--accent)]'
                             }`}
                           >
                             {category}
@@ -845,7 +841,7 @@ export default function SubmitPage() {
                     
                     {/* Custom items */}
                     <div>
-                      <label className="block text-sm font-medium mb-2">Add Specific Items</label>
+                      <label className="block text-sm font-bold uppercase tracking-wide mb-3">Add Specific Items</label>
                       <div className="flex gap-2">
                         <input
                           type="text"
@@ -867,13 +863,13 @@ export default function SubmitPage() {
                       </div>
                       
                       {formData.clothingItems.filter(item => !clothingCategories.includes(item)).length > 0 && (
-                        <div className="flex flex-wrap gap-2 mt-3">
+                        <div className="flex flex-wrap gap-3 mt-4">
                           {formData.clothingItems
                             .filter(item => !clothingCategories.includes(item))
                             .map((item) => (
                               <span
                                 key={item}
-                                className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[var(--accent)]/10 text-[var(--accent)] text-sm"
+                                className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--accent)]/10 text-[var(--accent)] text-sm font-bold"
                               >
                                 {item}
                                 <button
@@ -891,8 +887,8 @@ export default function SubmitPage() {
                     
                     {/* Estimated items */}
                     <div>
-                      <label className="block text-sm font-medium mb-4">
-                        Estimated Number of Items: <span className="text-[var(--accent)] font-bold">{formData.estimatedItems}</span>
+                      <label className="block text-sm font-bold uppercase tracking-wide mb-5">
+                        Estimated Number of Items: <span className="text-[var(--accent)]">{formData.estimatedItems}</span>
                       </label>
                       <div className="relative">
                         <div 
@@ -916,11 +912,11 @@ export default function SubmitPage() {
                     
                     {/* Photo upload */}
                     <div>
-                      <label className="block text-sm font-medium mb-2 flex items-center gap-2">
+                      <label className="block text-sm font-bold uppercase tracking-wide mb-3 flex items-center gap-2">
                         <Camera className="w-4 h-4 text-[var(--accent)]" />
                         Upload Photos (optional)
                       </label>
-                      <p className="text-sm text-[var(--muted)] mb-3">
+                      <p className="text-sm text-[var(--muted)] mb-4">
                         Add up to 5 photos of your items to help us give you a better estimate
                       </p>
                       
@@ -933,10 +929,10 @@ export default function SubmitPage() {
                         className="hidden"
                       />
                       
-                      <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
+                      <div className="grid grid-cols-3 sm:grid-cols-5 gap-4">
                         {/* Uploaded images */}
                         {formData.images.map((image, index) => (
-                          <div key={index} className="relative aspect-square rounded-xl overflow-hidden border border-[var(--border)] group">
+                          <div key={index} className="relative aspect-square overflow-hidden border-2 border-[var(--border)] group">
                             <img 
                               src={image} 
                               alt={`Upload ${index + 1}`}
@@ -945,7 +941,7 @@ export default function SubmitPage() {
                             <button
                               type="button"
                               onClick={() => removeImage(index)}
-                              className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                              className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                             >
                               <X className="w-4 h-4" />
                             </button>
@@ -962,10 +958,10 @@ export default function SubmitPage() {
                               console.log('Upload button clicked');
                               fileInputRef.current?.click();
                             }}
-                            className="aspect-square rounded-xl border-2 border-dashed border-[var(--accent)]/50 hover:border-[var(--accent)] bg-[var(--accent)]/5 hover:bg-[var(--accent)]/10 flex flex-col items-center justify-center gap-2 text-[var(--accent)] transition-all cursor-pointer"
+                            className="aspect-square border-2 border-dashed border-[var(--accent)]/50 hover:border-[var(--accent)] bg-[var(--accent)]/5 hover:bg-[var(--accent)]/10 flex flex-col items-center justify-center gap-2 text-[var(--accent)] transition-all cursor-pointer"
                           >
                             <Upload className="w-6 h-6" />
-                            <span className="text-xs font-medium">Add Photo</span>
+                            <span className="text-xs font-bold uppercase">Add Photo</span>
                           </motion.button>
                         )}
                       </div>
@@ -979,7 +975,7 @@ export default function SubmitPage() {
                     
                     {/* Description */}
                     <div>
-                      <label className="block text-sm font-medium mb-2">Additional Notes (optional)</label>
+                      <label className="block text-sm font-bold uppercase tracking-wide mb-3">Additional Notes (optional)</label>
                       <textarea
                         value={formData.clothingDescription}
                         onChange={(e) => updateFormData('clothingDescription', e.target.value)}
