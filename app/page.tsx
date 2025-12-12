@@ -36,10 +36,10 @@ const features = [
 ];
 
 const stats = [
-  { value: '2,500+', label: 'Items Resold' },
-  { value: '$45K+', label: 'Paid Out' },
-  { value: '500+', label: 'Customers' },
-  { value: '98%', label: 'Satisfaction' },
+  { value: '50+', label: 'Items Collected' },
+  { value: '$112', label: 'Paid Out' },
+  { value: '30+', label: 'Student Sellers' },
+  { value: '100%', label: 'Satisfaction' },
 ];
 
 const testimonials = [
